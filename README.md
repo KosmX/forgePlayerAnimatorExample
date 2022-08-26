@@ -5,6 +5,7 @@ This is a slightly modified Forge MDK, to demonstrate some usages of [PlayerAnim
 ExampleMod.java is unchanged.
 
 This demo does **not** use mixins.  
+In this example, I avoid lambda functions for better readability.
 
 ### PlayerAnimatorExample  
 It is a demo class, how should you load playerAnimator resources from minecraft resourcePacks (including the modPack) and map the players.  
