@@ -4,25 +4,14 @@ package com.example.examplemod;
 import dev.kosmx.playerAnim.api.layered.AnimationStack;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
-import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
-import dev.kosmx.playerAnim.core.data.gson.AnimationSerializing;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import static com.example.examplemod.ExampleMod.MODID;
 
@@ -36,14 +25,6 @@ public class PlayerAnimatorExample {
      * This will map player objects and the animation containers. To retrieve the animation for the player, you'll need that exact player object.
      */
     public static final Map<AbstractClientPlayer, ModifierLayer<IAnimation>> animationData = new IdentityHashMap<>();
-
-
-    /**
-     * This is where we'll store the loaded animations.
-     * The identifier has to be hash-able, but can be anything.
-     * (String/ResourceLocation both should work)
-     */
-    public static Map<ResourceLocation, KeyframeAnimation> animations = new HashMap<>();
 
 
     @SubscribeEvent
@@ -65,58 +46,6 @@ public class PlayerAnimatorExample {
         PlayerAnimatorExample.animationData.put(player, layer);
 
         //Alternative solution is to Mixin the mod animation container into the player class. But that requires knowing how to use Mixins.
-    }
-
-    /**
-     * Resource loading, it will allow animation loading from resourcePacks (animations work on client-side, use client-side resources)
-     */
-    @SubscribeEvent
-    public static void reloadResources(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(new ResourceManagerReloadListener() {
-            //This function will be called every time the user reloads the resources (and once when the game starts)
-            @Override
-            public void onResourceManagerReload(@NotNull ResourceManager manager) {
-                var map = new HashMap<ResourceLocation, KeyframeAnimation>();
-                for (
-                        var res : manager.listResources("animation",
-                        new Predicate<ResourceLocation>() {
-                            @Override
-                            public boolean test(ResourceLocation path) {
-                                return path.toString().endsWith(".json");
-                            }
-                        }
-                ).entrySet()) {
-                    try {
-                        //Use this commented code to use the filename as the resource ID instead of the name in the file.
-                        //var oldKey =  res.getKey().getPath();
-                        //var id = new ResourceLocation(res.getKey().getNamespace(), oldKey.substring(oldKey.lastIndexOf('/')+1, oldKey.lastIndexOf(".json")));
-                        //map.put(id, AnimationSerializing.deserializeAnimation(res.getValue().open()).get(0));
-
-                        for (var animation : AnimationSerializing.deserializeAnimation(res.getValue().open())) {
-                            map.put(new ResourceLocation(res.getKey().getNamespace(), serializeComponentToString((String) animation.extraData.get("name"))), animation);
-                        }
-                    } catch(IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                PlayerAnimatorExample.animations = map;
-            }
-        });
-    }
-
-    /**
-     * Emotecraft emotes has a component as their name.
-     * This is just a helper stuff
-     * @param arg Component as json
-     * @return  The String
-     */
-    public static String serializeComponentToString(String arg) {
-        var component = Component.Serializer.fromJson(arg);
-        if (component != null) {
-            return component.getString();
-        } else {
-            return arg.replace("\"", "");
-        }
     }
 
 }

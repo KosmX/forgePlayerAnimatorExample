@@ -1,6 +1,7 @@
 package com.example.examplemod;
 
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
+import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -35,7 +36,7 @@ public class PlayerAnimationTrigger {
                 //You can set an animation from anywhere ON THE CLIENT
                 //Do not attempt to do this on a server, that will only fail
 
-                animation.setAnimation(new KeyframeAnimationPlayer(PlayerAnimatorExample.animations.get(new ResourceLocation("examplemod", "waving"))));
+                animation.setAnimation(new KeyframeAnimationPlayer(PlayerAnimationRegistry.getAnimation(new ResourceLocation("examplemod", "waving"))));
                 //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
                 //See javadoc for details
             }
