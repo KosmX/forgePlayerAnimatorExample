@@ -1,6 +1,9 @@
 package com.example.examplemod;
 
+import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
+import dev.kosmx.playerAnim.api.layered.ModifierLayer;
+import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -31,7 +34,7 @@ public class PlayerAnimationTrigger {
             if (player == null) return; //The player can be null because it was a system message or because it is not loaded by this player.
 
             //Get the animation for that player
-            var animation = PlayerAnimatorExample.animationData.get((AbstractClientPlayer) player);
+            var animation = (ModifierLayer<IAnimation>)PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(new ResourceLocation(ExampleMod.MODID, "animation"));
             if (animation != null) {
                 //You can set an animation from anywhere ON THE CLIENT
                 //Do not attempt to do this on a server, that will only fail
