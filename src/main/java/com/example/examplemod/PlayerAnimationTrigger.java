@@ -7,6 +7,7 @@ import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -25,7 +26,7 @@ public class PlayerAnimationTrigger {
     @SubscribeEvent
     public static void onChatReceived(ClientChatReceivedEvent event) {
         //Test if it is a player (main or other) and the message
-        if (!event.getMessage().plainCopy().toString().equals("waving")) {
+        if (event.getMessage().contains(Component.literal("waving"))) {
 
 
             //Get the player from Minecraft, using the chat profile ID. From network packets, you'll receive entity IDs instead of UUIDs
