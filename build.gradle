@@ -1,8 +1,16 @@
+buildscript {
+    dependencies {
+        // MixinGradle https://github.com/SpongePowered/MixinGradle located in forge maven
+        classpath 'org.spongepowered:mixingradle:0.7.+'
+    }
+}
 plugins {
     id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
+apply plugin: 'org.spongepowered.mixin'
+
 
 version = '1.0'
 group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -132,11 +140,22 @@ repositories {
     }
 }
 
+mixin {
+    // MixinGradle Settings
+    add sourceSets.main, 'examplemod-refmap.json'
+    config 'examplemod.mixins.json' // Fabric naming convention
+
+    debug.export = true // Useful for debugging mixin code.
+}
+
 dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.19.3-44.0.1'
+    minecraft 'net.minecraftforge:forge:1.19.3-44.1.0'
+
+    // Mixin Annotation Processor
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor' // check https://github.com/SpongePowered/Mixin/releases for latest
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency

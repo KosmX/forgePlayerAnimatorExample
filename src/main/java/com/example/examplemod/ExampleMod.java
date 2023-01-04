@@ -31,7 +31,7 @@ public class ExampleMod
     // Define mod id in a common place for everything to reference
     public static final String MODID = "examplemod";
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
@@ -58,8 +58,11 @@ public class ExampleMod
         MinecraftForge.EVENT_BUS.register(this);
 
         // Register the item to a creative tab
-        modEventBus.addListener((CreativeModeTabEvent.BuildContents event) -> event.registerSimple(CreativeModeTabs.BUILDING_BLOCKS,
-                EXAMPLE_BLOCK_ITEM.get()));
+        modEventBus.addListener((CreativeModeTabEvent.BuildContents event) -> {
+            if (event.getTab() == CreativeModeTabs.BUILDING_BLOCKS) {
+                event.accept(EXAMPLE_BLOCK_ITEM);
+            }
+        });
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
